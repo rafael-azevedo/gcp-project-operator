@@ -226,14 +226,6 @@ func (r *ReconcileClusterDeployment) Reconcile(request reconcile.Request) (recon
 		}
 	}
 
-	// TODO(MJ): Perm issue in the api
-	// https://groups.google.com/forum/#!topic/gce-discussion/K_x9E0VIckk
-	err = gClient.CreateCloudBillingAccount(cd.Spec.Platform.GCP.ProjectID, string(billingAccount))
-	if err != nil {
-		reqLogger.Error(err, "error creating CloudBilling")
-		return reconcile.Result{}, err
-	}
-
 	gClient, err = r.gcpClientBuilder(cd.Spec.GCP.ProjectID, creds)
 	if err != nil {
 		reqLogger.Error(err, "could not get gcp client with secret creds", "Secret Name", orgGcpSecretName, "Operator Namespace", operatorNamespace)
