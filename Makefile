@@ -37,4 +37,4 @@ run:
 	go run cmd/manager/main.go
 
 image:
-	docker build --network=host . -f build/Dockerfile -t quay.io/${USER}/gcp-project-operator
+	buildah build-using-dockerfile --network=host -f build/Dockerfile -t quay.io/${USER}/gcp-project-operator

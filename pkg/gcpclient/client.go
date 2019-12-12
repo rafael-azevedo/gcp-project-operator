@@ -11,9 +11,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
-	"github.com/davecgh/go-spew"
 	"golang.org/x/oauth2/google"
 	cloudbilling "google.golang.org/api/cloudbilling/v1"
 	cloudresourcemanager "google.golang.org/api/cloudresourcemanager/v1"
@@ -262,29 +262,27 @@ func (c *gcpClient) EnableAPI(projectID, api string) error {
 	}
 }
 
+// CreateCloudBillingAccount associates cloud billing account with project
+// TODO: This needs unit testing. Sensitive place
 func (c *gcpClient) CreateCloudBillingAccount(projectID, billingAccountID string) error {
 	project := fmt.Sprintf("projects/%s", projectID)
-	billingAccount := fmt.Sprintf("billingAccounts/%s", billingAccountID)
-	projectBillingInfo := &cloudbilling.ProjectBillingInfo{
-		BillingAccountName: billingAccount,
-		BillingEnabled:     true,
-	}
-	spew.Dump(projectBillingInfo)
-
+	billingAccount := fmt.Sprintf("billingAccounts/%s", strings.TrimSuffix(billingAccountID, "\n"))
 	info, err := c.cloudBillingClient.Projects.GetBillingInfo(project).Do()
 	if err != nil {
 		return err
 	}
 
-	spew.Dump(info)
 	// if we dont have set billing account
 	if len(info.BillingAccountName) == 0 {
-		_, err := c.cloudBillingClient.Projects.UpdateBillingInfo(project, projectBillingInfo).Do()
+		info.BillingAccountName = billingAccount
+		info.BillingEnabled = true
+		_, err := c.cloudBillingClient.Projects.UpdateBillingInfo(project, info).Do()
 		if err != nil {
 			return err
 		}
 	}
 	if len(info.BillingAccountName) > 0 && info.BillingAccountName != billingAccount {
+		info.BillingAccountName = billingAccount
 		projectBillingDisable := &cloudbilling.ProjectBillingInfo{
 			BillingAccountName: "",
 			BillingEnabled:     false,
@@ -293,7 +291,7 @@ func (c *gcpClient) CreateCloudBillingAccount(projectID, billingAccountID string
 		if err != nil {
 			return err
 		}
-		_, err = c.cloudBillingClient.Projects.UpdateBillingInfo(project, projectBillingInfo).Do()
+		_, err = c.cloudBillingClient.Projects.UpdateBillingInfo(project, info).Do()
 		if err != nil {
 			return err
 		}
