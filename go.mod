@@ -14,7 +14,6 @@ require (
 	github.com/go-openapi/spec v0.18.0 // indirect
 	github.com/golang/groupcache v0.0.0-20191002201903-404acd9df4cc // indirect
 	github.com/golang/mock v1.3.1
-	github.com/google/btree v1.0.0 // indirect
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/google/uuid v1.0.0 // indirect
 	github.com/googleapis/gnostic v0.3.1 // indirect
@@ -31,7 +30,6 @@ require (
 	github.com/operator-framework/operator-sdk v0.8.3-0.20190722210327-daf62d44e47e
 	github.com/pborman/uuid v0.0.0-20180906182336-adf5a7427709 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
-	github.com/prometheus/client_golang v0.9.3-0.20190127221311-3c4408c8b829 // indirect
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/spf13/pflag v1.0.3
 	github.com/stretchr/testify v1.3.0
@@ -85,3 +83,5 @@ replace google.golang.org/api => google.golang.org/api v0.11.0
 replace github.com/openshift/cluster-network-operator => github.com/openshift/cluster-network-operator v0.0.0-20190207145423-c226dcab667e
 
 replace github.com/openshift/api => github.com/openshift/api v3.9.1-0.20190927182313-d4a64ec2cbd8+incompatible
+
+go 1.13

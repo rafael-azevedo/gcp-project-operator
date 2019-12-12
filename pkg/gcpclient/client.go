@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/davecgh/go-spew"
 	"golang.org/x/oauth2/google"
 	cloudbilling "google.golang.org/api/cloudbilling/v1"
 	cloudresourcemanager "google.golang.org/api/cloudresourcemanager/v1"
@@ -268,11 +269,14 @@ func (c *gcpClient) CreateCloudBillingAccount(projectID, billingAccountID string
 		BillingAccountName: billingAccount,
 		BillingEnabled:     true,
 	}
+	spew.Dump(projectBillingInfo)
 
 	info, err := c.cloudBillingClient.Projects.GetBillingInfo(project).Do()
 	if err != nil {
 		return err
 	}
+
+	spew.Dump(info)
 	// if we dont have set billing account
 	if len(info.BillingAccountName) == 0 {
 		_, err := c.cloudBillingClient.Projects.UpdateBillingInfo(project, projectBillingInfo).Do()
